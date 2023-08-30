@@ -1,0 +1,366 @@
+{% load static %}
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+    <link rel="stylesheet" href="{% static 'split.css' %}">
+    <script src="{% static 'home.js' %}"></script>
+    <script src="{% static "js/jquery-1.11.1.js" %}"></script>
+  
+
+    </script> 
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>HTML 5 Boilerplate</title>
+  </head>
+  <body>
+    <div class="split-page"style="height:95%;border-width: 1px;border-color:black;">
+        <div class="left-column" style="height:999px;border-width: 10px;">
+            <form method="POST" action="{% url 'split' %}">
+                {% csrf_token %}
+            <div id="bible-selectors">
+                <select id="book-selector" name="book-selector" value={{book}}>
+                  <option value={{book.1}}>{{book.0}}</option>
+                  
+                   
+                </select>
+              
+                <select id="chapter-selector" name="chapter-selector" value={{chapter}}>
+                  <option value={{chapter}}>{{chapter}}</option>
+                  <!-- Options for chapter selection -->
+                  <!-- Populate dynamically based on the selected book -->
+                </select>
+              
+                <select id="verse-selector" name="verse-selector" value={{verse}}>
+                  <option value={{verse}}>{{verse}}</option>
+                  <!-- Options for verse selection -->
+                  <!-- Populate dynamically based on the selected book and chapter -->
+                </select>
+        
+          
+              </div>
+
+              <div id="bible-open">
+        
+                <input id='Open1' type="submit" value="Open">
+                <a class="image-link" href="{% url 'display' %}" style='text-decoration:none;'><img style='height:100px;padding:0px'src="https://static.thenounproject.com/png/2714731-200.png"></a>
+
+            </div>
+          <hr>
+          <div id="verse">
+            <ul>
+            {% for verse in verses %}
+            <li style="list-style: none;"><p style="text-align: left;
+              max-width: 600px ;
+              font-family:Arial, Helvetica, sans-serif;
+              font-weight: 400;
+              letter-spacing: .1rem;">{{verse}}</p></li>
+            
+            {% endfor %}
+      
+            </ul>
+          
+        
+        </div>
+      </div>
+        
+        <div class="right-column" style="border-style:none;">
+            <div id="bible-selectors">
+                <select id="book-selector2" name="book-selector2" value={{book2}}>
+                  <option value={{book2.1}}>{{book2.0}}</option>
+                  
+                   
+                </select>
+              
+                <select id="chapter-selector2" name="chapter-selector2" value={{chapter2}}>
+                  <option value={{chapter2}}>{{chapter2}}</option>
+                  <!-- Options for chapter selection -->
+                  <!-- Populate dynamically based on the selected book -->
+                </select>
+              
+                <select id="verse-selector2" name="verse-selector2" value={{verse}}>
+                  <option value={{verse2}}>{{verse2}}</option>
+                  <!-- Options for verse selection -->
+                  <!-- Populate dynamically based on the selected book and chapter -->
+                </select>
+        
+          
+              </div>
+              <div id="bible-open">
+                <a class="image-link" href="{% url 'display' %}" style='text-decoration:none;'><img style='height:100px;padding:0px'src="https://static.thenounproject.com/png/2714731-200.png"></a>
+                <input id='Open1' type="submit" value="Open">
+
+            </div>
+        </form>
+          <hr>
+          <div id="verse">
+            <ul>
+            {% for verse in verses2 %}
+            <li style="list-style: none;"><p style="list-style: none;"><p style="text-align: left;
+              max-width: 600px ;
+              font-family:Arial, Helvetica, sans-serif;
+              font-weight: 400;
+              letter-spacing: .1rem;">{{verse}}</p></li>
+            
+            {% endfor %}
+      
+            </ul>
+       
+      
+    </div>
+  </div>
+  
+</body>
+<script>
+    $(document).ready(function() {
+        var jsonObj = [];
+        var queueList = [];
+      
+        $.getJSON(
+          "https://raw.githubusercontent.com/jplehmann/textbites/master/textbites/data/NKJV.bible.json",
+          function(json) {
+            // point jsonObj to the .json file.
+            jsonObj = json;
+      
+            //Populate booklist
+            jsonObj.books.forEach(function(val, i) {
+              var option = new Option(val.name, i, false, false);
+              $("#book-selector").append(option);
+            });
+            
+            
+          // Populate list
+          jsonObj.books[bookindex].chapters.forEach(function(val, i) {
+            var option = new Option(i + 1, i+1, false, false);
+            $("#chapter-selector").append(option);
+          });
+    
+          jsonObj.books[bookindex].chapters[chapterindex].verses.forEach(function(
+            val,
+            i
+          ) {
+            var option = new Option(val.num+1, i+1, false, false);
+            $("#verse-selector").append(option);
+          });
+            
+          }
+        );
+      
+        function PopulateChapterList(bookindex) {
+          // Clear Chapter List first
+          document.getElementById("chapter-selector").innerHTML ='';
+          // Populate list
+          jsonObj.books[bookindex].chapters.forEach(function(val, i) {
+            var option = new Option(i + 1, i+1, false, false);
+            $("#chapter-selector").append(option);
+          });
+        }
+      
+        function PopulateVerseList(bookindex, chapterindex) {
+          // Clear Verse List first
+          document.getElementById("verse-selector").innerHTML = "";
+          // Populate list
+          jsonObj.books[bookindex].chapters[chapterindex].verses.forEach(function(
+            val,
+            i
+          ) {
+            var option = new Option(val.num, i+1, false, false);
+            $("#verse-selector").append(option);
+          });
+        }
+      
+        function GetBookSelectedIndex() {
+          // get booklist element
+          var blist = document.getElementById("book-selector");
+          // get current selected book index from option value
+          return blist.options[blist.selectedIndex].value;
+        }
+      
+        function GetBookName() {
+          // get booklist element
+          var blist = document.getElementById("book-selector");
+          // get current selected book index from option value
+          return blist.options[blist.selectedIndex].text;
+        }
+      
+        function GetChapterSelectedIndex() {
+          // get chapterlist element
+          var clist = document.getElementById("chapter-selector");
+          // get current selected chapter index from option value
+          return clist.options[clist.selectedIndex].value;
+        }
+      
+        function GetChapterNumber() {
+          // get chapterlist element
+          var clist = document.getElementById("chapter-selector");
+          // get current selected chapter index from option value
+          return clist.options[clist.selectedIndex].text;
+        }
+      
+        function GetVerseSelectedIndex() {
+          // get verselist element
+          var vlist = document.getElementById("verse-selector");
+          // get current selected verse index from option value
+          return vlist.options[vlist.selectedIndex].value;
+        }
+      
+        function GetVerseNumber() {
+          // get verselist element
+          var vlist = document.getElementById("verse-selector");
+          // get current selected verse index from option value
+          return vlist.options[vlist.selectedIndex].text;
+        }
+      
+        function GetVerseText(bookindex, chapterindex, verseindex) {
+          return jsonObj
+            .books[bookindex].chapters[chapterindex].verses[verseindex].text;
+        }
+      
+        // On booklist change,
+        // populate the chapter list for
+        // the current selected book
+        $("#book-selector").on("change", function() {
+          // populate chapter list with chapters for selected book
+          PopulateChapterList(GetBookSelectedIndex());
+          // populate verse list for chapter 1
+          PopulateVerseList(GetBookSelectedIndex(), 0);
+        });
+      
+        // On chapterlist change,
+        // populate the verse list for
+        // the current selected chapter
+        $("#chapter-selector").on("change", function() {
+          // populate verse list for chapter 1
+          PopulateVerseList(GetBookSelectedIndex(), GetChapterSelectedIndex());
+        });})
+    
+    $(document).ready(function() {
+            var jsonObj = [];
+            var queueList = [];
+          
+            $.getJSON(
+              "https://raw.githubusercontent.com/jplehmann/textbites/master/textbites/data/NKJV.bible.json",
+              function(json) {
+                // point jsonObj to the .json file.
+                jsonObj = json;
+          
+                //Populate booklist
+                jsonObj.books.forEach(function(val, i) {
+                  var option = new Option(val.name, i, false, false);
+                  $("#book-selector2").append(option);
+                });
+                
+                
+              // Populate list
+              jsonObj.books[bookindex].chapters.forEach(function(val, i) {
+                var option = new Option(i + 1, i+1, false, false);
+                $("#chapter-selector2").append(option);
+              });
+        
+              jsonObj.books[bookindex].chapters[chapterindex].verses.forEach(function(
+                val,
+                i
+              ) {
+                var option = new Option(val.num, i+1, false, false);
+                $("#verse-selector2").append(option);
+              });
+                
+              }
+            );
+          
+            function PopulateChapterList(bookindex) {
+              // Clear Chapter List first
+              document.getElementById("chapter-selector2").innerHTML ='';
+              // Populate list
+              jsonObj.books[bookindex].chapters.forEach(function(val, i) {
+                var option = new Option(i + 1, i+1, false, false);
+                $("#chapter-selector2").append(option);
+              });
+            }
+          
+            function PopulateVerseList(bookindex, chapterindex) {
+              // Clear Verse List first
+              document.getElementById("verse-selector2").innerHTML = "";
+              // Populate list
+              jsonObj.books[bookindex].chapters[chapterindex].verses.forEach(function(
+                val,
+                i
+              ) {
+                var option = new Option(val.num, i, false, false);
+                $("#verse-selector2").append(option);
+              });
+            }
+          
+            function GetBookSelectedIndex() {
+              // get booklist element
+              var blist = document.getElementById("book-selector2");
+              // get current selected book index from option value
+              return blist.options[blist.selectedIndex].value;
+            }
+          
+            function GetBookName() {
+              // get booklist element
+              var blist = document.getElementById("book-selector2");
+              // get current selected book index from option value
+              return blist.options[blist.selectedIndex].text;
+            }
+          
+            function GetChapterSelectedIndex() {
+              // get chapterlist element
+              var clist = document.getElementById("chapter-selector2");
+              // get current selected chapter index from option value
+              return clist.options[clist.selectedIndex].value;
+            }
+          
+            function GetChapterNumber() {
+              // get chapterlist element
+              var clist = document.getElementById("chapter-selector2");
+              // get current selected chapter index from option value
+              return clist.options[clist.selectedIndex].text;
+            }
+          
+            function GetVerseSelectedIndex() {
+              // get verselist element
+              var vlist = document.getElementById("verse-selector2");
+              // get current selected verse index from option value
+              return vlist.options[vlist.selectedIndex].value;
+            }
+          
+            function GetVerseNumber() {
+              // get verselist element
+              var vlist = document.getElementById("verse-selector2");
+              // get current selected verse index from option value
+              return vlist.options[vlist.selectedIndex].text;
+            }
+          
+            function GetVerseText(bookindex, chapterindex, verseindex) {
+              return jsonObj
+                .books[bookindex].chapters[chapterindex].verses[verseindex].text;
+            }
+          
+            // On booklist change,
+            // populate the chapter list for
+            // the current selected book
+            $("#book-selector2").on("change", function() {
+              // populate chapter list with chapters for selected book
+              PopulateChapterList(GetBookSelectedIndex());
+              // populate verse list for chapter 1
+              PopulateVerseList(GetBookSelectedIndex(), 0);
+            });
+          
+            // On chapterlist change,
+            // populate the verse list for
+            // the current selected chapter
+            $("#chapter-selector2").on("change", function() {
+              // populate verse list for chapter 1
+              PopulateVerseList(GetBookSelectedIndex(), GetChapterSelectedIndex());
+            });})
+        
+</script>
+</html>

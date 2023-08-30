@@ -1,0 +1,205 @@
+{% load static %}
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+    <link rel="stylesheet" href="{% static 'home.css' %}">
+    <script src="{% static 'home.js' %}"></script>
+    <script src="{% static "js/jquery-1.11.1.js" %}"></script>
+  
+
+    </script> 
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>HTML 5 Boilerplate</title>
+  </head>
+  <body>
+  <form method="POST" action="{% url 'display' %}">
+    {% csrf_token %}
+    <div id="bible-selectors">
+        <select id="book-selector" name="book-selector" value={{book}}>
+          <option value={{book.1}}>{{book.0}}</option>
+          
+           
+        </select>
+      
+        <select id="chapter-selector" name="chapter-selector" value={{chapter}}>
+          <option value={{chapter}}>{{chapter}}</option>
+          <!-- Options for chapter selection -->
+          <!-- Populate dynamically based on the selected book -->
+        </select>
+      
+        <select id="verse-selector" name="verse-selector" value={{verse}}>
+          <option value={{verse}}>{{verse}}</option>
+          <!-- Options for verse selection -->
+          <!-- Populate dynamically based on the selected book and chapter -->
+        </select>
+
+  
+      </div>
+      <div id="bible-open">
+        <input id='Open1' type="submit" value="Open">
+        <a class="image-link" href="{% url 'split' %}" style='text-decoration:none;'><img style='height:50px;padding:10%'src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAAeFBMVEUAAAD///+0tLRhYWH7+/uwsLDh4eHe3t5YWFjFxcX19fXr6+vv7++mpqZMTEzl5eUiIiKQkJC4uLh4eHjLy8uamppTU1NERETY2NgUFBQNDQ0wMDAZGRkoKChoaGhGRkZ8fHw1NTVwcHCEhISUlJSfn588PDzR0dGpdZzLAAAEX0lEQVR4nO2c63aqMBBGOwpeALV4qYqXaq31/d/wuNp6qkBISLHJ5/r2b1ecvQyTzIT49HR3WqKmdf+v/wNoiA8N8aEhPjTEh4b40BAfGuJDQ3xoiA8N8aEhPjTEh4b40BAfGuJDQ3xoiA8N8aEhPjTEh4b40BAfGuJDQ3xoiA8N8aEhPjTEh4b40BAfGuJDQ3xoiA8N8QE1HG6MP9qM4apnE6Y921Hb+LPNGLbjN5tAbUkD+XNDkVlmE6sN8/45NgeGMn21Cbc+7ZE4MpRkaxNwTTZpJM4MRd5XNkHXYTj+js2RofTvnFPfupfYXBlKZ2ITuCnv0f/YnBlKdLQJ3YzpVWzuDEUWNsEbMIyuY3NpKHKPh3GT3sbm1lBmjefU/znUE0Ppv9hoqHlb5GNzbSjdnYWHkmNciM25oSShjUo5p6AYm3tDCRbPNjZFXoo/oB+GIrF5FGqyWckP6IuhyGBpI3XNPJ9DPTOU/tBG64dJIYf6ZvjLnHpMlLF5YyiR/UxVzlC/DO1nanGV99XQcqa+R1Vj+mVoU1Ht+5Uj+mYoMv2oJ7gdaQb0zlCSOv3UzUE3nIeGIqlxRfVSFdMF8xo0rBjFfPPcM4hpbBhUdQ690G8ZEnYqRumEpsPo8sInRjl1OVOv8v4THdc6wed++UYbheCkORSbVy+CCARV7Y11qh8AgJmyMH6t2ociodinZmY5FILOpKTcWJd0m3BJBoWZupli59A8wSm3T+090g/4RXxzmqqplDAJfioqbaWEymn+nUO7+s+CMppk5xQDvQ/VER1XT1vXQdyZ3dPH4LGWiRzh+VFcHh5vpbiQpF/F1PBxtmu3dH9q/vARZ2owvl7yJ4+XUJPD7bZteHIdUcMsCl2pVfhIO7dovC8pnw7aLjAMcVpe5r88ykxd9FTv2j4PXMfWCK2qdptB79x7NOcXe/TVvzuvFjzXGtA5NWoZnM5kZjnVy3OLODU70m+bjObj2dPJ+EX3/Uw/mofnh4Max8DZRPswemcY7Oq9dPKqW/19M+zWft8009T+fhkGofbcsITqnOqVYZxa+J3pVeVUnwyn1peFnitqf48MTVZ5JeqZ6o2h6SqvojdVDOyL4eLXrwmvFVsSTwzH5rd11ZR3qbwwzHebbCmtqHww7DZ2pzRrFTdx7g2jsc0qr+JQKIGcG45+mUPzFHKqa8NTE1ctbtjnulSODcOaL8yakN2eNLo1nNznav7y+mF0aRg3sQiWE/pwDzgYN5tibvnZpzozjNP7/nlE+5JTXRmad5ts+Tg6NRxoG76/J3uLnBkGkya3MWo+T1NdGNbvNtmyHjgxDBu6FGvELvlzw6ihSsn4C0tOkRU0Y/jxp3+iVA/Q//qqAQ3xoSE+NMSHhvjQEB8a4kNDfGiIDw3xoSE+NMSHhvjQEB8a4kNDfGiIDw3xoSE+NMSHhvjQEB8a4kNDfGiIDw3xoSE+NMSHhvjQEB8a4kNDfGiIDw3xoSE+jg3/AR0kVQA2fTE3AAAAAElFTkSuQmCC"></a>
+    </form>
+  </div>
+  <div id="bible-open">
+    <a class="image-link" href="{% url 'VoiceControl' %}" style='text-decoration:none; background-color:white;'><img style='height:50px;padding:10%'src="data:image/png;base64,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"></a>
+</form>
+</div>
+    <br>
+    <hr>
+    
+    <div id="current">
+      <p id="current_open">{{book.0}} {{chapter}} : {{verse}} - {{EndVerse}}</p>
+    </div>
+    <div id="verse">
+      <form method="POST" action="{% url 'prevpage' %}">
+        {% csrf_token %}
+        <input class="back-button" href='nextpage' type='submit' value='&lt'style="left: -1.5vw; ">
+    </form>
+      <ul>
+      {% for verse in verses %}
+      <li><p>{{verse}}</p></li>
+      
+      {% endfor %}
+
+      </ul>
+      <form method="POST" action="{% url 'nextpage' %}">
+        {% csrf_token %}
+        
+        <input class="forward-button" href='prevpage' type='submit' value='&gt' style="right: -1.5vw; ">
+    </form>
+    </div>
+    
+  </body>
+  <script>
+    $(document).ready(function() {
+      var jsonObj = [];
+      var queueList = [];
+    
+      $.getJSON(
+        "https://raw.githubusercontent.com/jplehmann/textbites/master/textbites/data/NKJV.bible.json",
+        function(json) {
+          // point jsonObj to the .json file.
+          jsonObj = json;
+    
+          //Populate booklist
+          jsonObj.books.forEach(function(val, i) {
+            var option = new Option(val.name, i, false, false);
+            $("#book-selector").append(option);
+          });
+          
+          
+        // Populate list
+        jsonObj.books[bookindex].chapters.forEach(function(val, i) {
+          var option = new Option(i + 1, i+1, false, false);
+          $("#chapter-selector").append(option);
+        });
+  
+        jsonObj.books[bookindex].chapters[chapterindex].verses.forEach(function(
+          val,
+          i
+        ) {
+          var option = new Option(val.num+1, i+1, false, false);
+          $("#verse-selector").append(option);
+        });
+          
+        }
+      );
+    
+      function PopulateChapterList(bookindex) {
+        // Clear Chapter List first
+        document.getElementById("chapter-selector").innerHTML ='';
+        // Populate list
+        jsonObj.books[bookindex].chapters.forEach(function(val, i) {
+          var option = new Option(i + 1, i+1, false, false);
+          $("#chapter-selector").append(option);
+        });
+      }
+    
+      function PopulateVerseList(bookindex, chapterindex) {
+        // Clear Verse List first
+        document.getElementById("verse-selector").innerHTML = "";
+        // Populate list
+        jsonObj.books[bookindex].chapters[chapterindex].verses.forEach(function(
+          val,
+          i
+        ) {
+          var option = new Option(val.num, i+1, false, false);
+          $("#verse-selector").append(option);
+        });
+      }
+    
+      function GetBookSelectedIndex() {
+        // get booklist element
+        var blist = document.getElementById("book-selector");
+        // get current selected book index from option value
+        return blist.options[blist.selectedIndex].value;
+      }
+    
+      function GetBookName() {
+        // get booklist element
+        var blist = document.getElementById("book-selector");
+        // get current selected book index from option value
+        return blist.options[blist.selectedIndex].text;
+      }
+    
+      function GetChapterSelectedIndex() {
+        // get chapterlist element
+        var clist = document.getElementById("chapter-selector");
+        // get current selected chapter index from option value
+        return clist.options[clist.selectedIndex].value;
+      }
+    
+      function GetChapterNumber() {
+        // get chapterlist element
+        var clist = document.getElementById("chapter-selector");
+        // get current selected chapter index from option value
+        return clist.options[clist.selectedIndex].text;
+      }
+    
+      function GetVerseSelectedIndex() {
+        // get verselist element
+        var vlist = document.getElementById("verse-selector");
+        // get current selected verse index from option value
+        return vlist.options[vlist.selectedIndex].value;
+      }
+    
+      function GetVerseNumber() {
+        // get verselist element
+        var vlist = document.getElementById("verse-selector");
+        // get current selected verse index from option value
+        return vlist.options[vlist.selectedIndex].text;
+      }
+    
+      function GetVerseText(bookindex, chapterindex, verseindex) {
+        return jsonObj
+          .books[bookindex].chapters[chapterindex].verses[verseindex].text;
+      }
+    
+      // On booklist change,
+      // populate the chapter list for
+      // the current selected book
+      $("#book-selector").on("change", function() {
+        // populate chapter list with chapters for selected book
+        PopulateChapterList(GetBookSelectedIndex());
+        // populate verse list for chapter 1
+        PopulateVerseList(GetBookSelectedIndex(), 0);
+      });
+    
+      // On chapterlist change,
+      // populate the verse list for
+      // the current selected chapter
+      $("#chapter-selector").on("change", function() {
+        // populate verse list for chapter 1
+        PopulateVerseList(GetBookSelectedIndex(), GetChapterSelectedIndex());
+      });})
+  
+</script>
+</html>
